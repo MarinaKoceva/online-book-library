@@ -1,4 +1,4 @@
-name: CI - Library Catalog App
+name: CI/CD Workflow - Library Catalog
 
 on:
   push:
@@ -7,28 +7,43 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-22.04
+  build-and-test:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v3
 
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
+      - name: ⚖️ Set up Node.js 18.x
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: 📦 Install dependencies
-        run: npm install
+      - name: 📚 Install dependencies
+        run: npm ci
 
-      - name: 🧩 Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: ▶️ Start backend server
+        run: npm run server &
 
-      - name: 🚀 Start SPA app
-        run: |
-          npx http-server -a localhost -p 3000 -c-1 &
-          sleep 3
+      - name: ▶️ Start frontend
+        run: npm start &
 
-      - name: 🧪 Run Playwright tests
+      - name: ⏱ Wait for servers to start
+        run: sleep 15
+
+      - name: 🚀 Install Playwright
+        run: npx playwright install
+
+      - name: ✅ Run tests
         run: npm test
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✨ Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_TOKEN }}
