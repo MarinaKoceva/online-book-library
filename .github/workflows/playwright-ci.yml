@@ -22,13 +22,13 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🧩 Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: 🧩 Install Playwright browsers (official)
+        uses: microsoft/playwright-github-action@v1
 
-      - name: 🚀 Start app in background
+      - name: 🚀 Start SPA in background
         run: |
           npx http-server -a localhost -p 3000 -c-1 &
-          sleep 5
+          sleep 3
 
       - name: 🧪 Run Playwright tests
         run: npm test
