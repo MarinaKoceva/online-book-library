@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 📥 Checkout repository
@@ -22,10 +22,10 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🧩 Install Playwright browsers (official)
-        uses: microsoft/playwright-github-action@v1
+      - name: 🧩 Install Playwright browsers
+        run: npx playwright install --with-deps
 
-      - name: 🚀 Start SPA in background
+      - name: 🚀 Start SPA app
         run: |
           npx http-server -a localhost -p 3000 -c-1 &
           sleep 3
