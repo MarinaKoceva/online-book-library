@@ -11,19 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📞 Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🛠️ Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: 🔎 Install Playwright browsers
+      - name: 🧩 Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: 🌟 Run tests
+      - name: 🚀 Start app in background
+        run: |
+          npx http-server -a localhost -p 3000 -c-1 &
+          sleep 5
+
+      - name: 🧪 Run Playwright tests
         run: npm test
