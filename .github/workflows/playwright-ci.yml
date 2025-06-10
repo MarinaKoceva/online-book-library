@@ -2,34 +2,33 @@ name: CI - Library Catalog App
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18.x
 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
+      - name: 📦 Install dependencies
+        run: npm install
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: 🧩 Install Playwright browsers (official)
+        uses: microsoft/playwright-github-action@v1
 
-      - name: Start backend and frontend servers
+      - name: 🚀 Start SPA in background
         run: |
-          npm run server &> server.log &
-          npx http-server -a localhost -p 3000 -P http://localhost:3000? -c-1 &> frontend.log &
-          sleep 8
+          npx http-server -a localhost -p 3000 -c-1 &
+          sleep 3
 
-      - name: Run Playwright tests
+      - name: 🧪 Run Playwright tests
         run: npm test
